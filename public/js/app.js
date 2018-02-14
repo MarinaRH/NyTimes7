@@ -9,33 +9,35 @@ btnXhr.addEventListener('click',function(e){
   responseContainer.innerHTML='';
   searchedForText=searchField.value;
   getNews();
-})
+});
 
-
-// AJAX con xhr
-function getNews(){
-    const XHR=new XMLHttpRequest();
-    XHR.open('GET', `http://api.nytimes.com/svc/search/v2/articlesearch.json?q=${searchedForText}&api-key=67e2b2e80b4340dc9b9c27b472072dc7`);
-    XHR.onload=addNews;
-    XHR.onerror=handleError;
-    XHR.send();
+function getNews() {
+  const XHR = new XMLHttpRequest();
+  XHR.onreadystatechange = function() {
+    if (XHR.readyState === 4 && XHR.status === 200) {
+      const data = JSON.parse(this.responseText);
+      const response = data.response.docs;
+      XHR.onload = addNews(response); // función de ejecución
+      XHR.onerror = handleError; // funcion de error
+    }
+  };
+  XHR.open('GET', `http://api.nytimes.com/svc/search/v2/articlesearch.json?q=${searchedForText}&api-key=67e2b2e80b4340dc9b9c27b472072dc7`);
+  XHR.send();
 }
 
 function handleError(){
-    console.log('se ha presentado un error');
+    console.log('Existe un error');
 }
 
-function addNews(){
-    const data = JSON.parse(this.responseText);
-    const article = data.response.docs[0];
-    const title = article.headline.main;
-    const snippet = article.snippet;
-    let li = document.createElement('li');
-    li.className = 'articleClass';
-    li.innerText=snippet;
-    responseContainer.appendChild(li);
-    // const response=data.response;
-    // console.log(response);
+function addNews(response){
+  if (response.length > 0) {
+    response.forEach(function(element) {
+      if (element.document_type === 'article') {
+        const noticia = `<div class=" container"><div class = "col-md-10 col offset-md-1"><h5 class="title">${element.headline.main}</h5><p>${element.snippet}</p></div></div><br>`;
+        responseContainer.appendChild(noticia);
+      }
+    });
+  }
 }
 
 
