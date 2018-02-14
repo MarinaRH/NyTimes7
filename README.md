@@ -25,9 +25,9 @@
 
 ## RECURSOS
 
-. Html,css,Javascript
-. Node
-. Express (dependencia)
-. gitignore.
-. Api Ny Times.
+*  Html,css,Javascript
+* Node
+* Express (dependencia)
+* gitignore.
+* Api Ny Times.
 
